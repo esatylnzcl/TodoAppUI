@@ -1,0 +1,50 @@
+{
+  "publicRoutes": [
+    {
+      "path": "/login",
+      "component": "LoginPage",
+      "description": "Login page for user authentication"
+    },
+    {
+      "path": "/register",
+      "component": "RegisterPage",
+      "description": "Registration page for new users"
+    }
+  ],
+  "protectedRoutes": [
+    {
+      "path": "/dashboard",
+      "component": "DashboardLayout",
+      "children": [
+        {
+          "path": "",
+          "index": true,
+          "component": "TasksPage",
+          "description": "Default dashboard view showing tasks"
+        },
+        {
+          "path": "tasks",
+          "component": "TasksPage",
+          "description": "Tasks management page"
+        },
+        {
+          "path": "categories",
+          "component": "CategoriesPage",
+          "description": "Categories management page"
+        }
+      ]
+    }
+  ],
+  "redirects": [
+    {
+      "from": "/",
+      "to": "/dashboard",
+      "description": "Redirect root to dashboard"
+    },
+    {
+      "from": "*",
+      "to": "/dashboard",
+      "description": "Redirect all unmatched routes to dashboard"
+    }
+  ]
+}
