@@ -18,8 +18,8 @@ export interface RegisterData {
   email: string;
   username: string;
   password: string;
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
 }
 
 export interface AuthResponse {
@@ -61,20 +61,20 @@ export interface Task {
 
 export interface CreateTaskData {
   title: string;
-  description?: string;
+  description: string;
   categoryId: number;
-  startDate?: string;
-  endDate?: string;
+  startDate: string;
+  endDate: string;
 }
 
 export interface UpdateTaskData {
   id: number;
-  title?: string;
-  description?: string;
-  status?: TaskStatus;
-  categoryId?: number;
-  startDate?: string;
-  endDate?: string;
+  title: string;
+  description: string;
+  status: TaskStatus;
+  categoryId: number;
+  startDate: string;
+  endDate: string;
 }
 
 // API Response Types

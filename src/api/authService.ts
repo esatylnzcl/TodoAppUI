@@ -1,7 +1,6 @@
 import axiosInstance from "./axios";
 import type { AuthResponse, LoginCredentials, RegisterData, User } from "../types";
 
-// JWT token'ı decode etmek için helper fonksiyon
 const decodeJWT = (token: string): any => {
   try {
     const base64Url = token.split('.')[1];
@@ -25,13 +24,10 @@ export const authService = {
       "/Auth/login",
       credentials
     );
-    console.log('Login Response:', response.data); // Debug
     
-    const token = response.data.data.accessToken; // ← .data.accessToken değil
+    const token = response.data.data.accessToken;
     const decoded = decodeJWT(token);
-    console.log('Decoded JWT:', decoded); // Debug
     
-    // JWT'den user objesi oluştur
     const user: User = {
       id: decoded.nameid || decoded.sub,
       username: decoded.unique_name,
@@ -43,26 +39,19 @@ export const authService = {
     return { user, token };
   },
 
-  async register(data: RegisterData): Promise<{ user: User; token: string }> {
-    const response = await axiosInstance.post<AuthResponse>(
+  async register(data: RegisterData): Promise<{ user?: User; token?: string; success: boolean; message: string }> {
+    const response = await axiosInstance.post(
       "/Auth/register",
       data
     );
-    console.log('Register Response:', response.data); // Debug
     
-    const token = response.data.data.accessToken; // ← .data.accessToken değil
-    const decoded = decodeJWT(token);
-    console.log('Decoded JWT:', decoded); // Debug
+    if (response.data.success) {
+      return {
+        success: true,
+        message: response.data.message || "Successfully registered"
+      };
+    }
     
-    // JWT'den user objesi oluştur
-    const user: User = {
-      id: decoded.nameid || decoded.sub,
-      username: decoded.unique_name,
-      email: decoded.email,
-      firstName: decoded.FirstName,
-      lastName: decoded.LastName,
-    };
-    
-    return { user, token };
+    throw new Error(response.data.message || "Registration failed");
   },
 };

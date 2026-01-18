@@ -219,12 +219,19 @@ const CategoriesPage = () => {
             rules={[
               { required: true, message: "Kategori adı gerekli!" },
               { min: 2, message: "Kategori adı en az 2 karakter olmalı!" },
+              { max: 100, message: "Kategori adı en fazla 100 karakter olabilir!" },
             ]}
           >
             <Input placeholder="Örn: İş, Kişisel, Alışveriş..." size="large" />
           </Form.Item>
 
-          <Form.Item name="description" label="Açıklama">
+          <Form.Item 
+            name="description" 
+            label="Açıklama"
+            rules={[
+              { max: 500, message: "Açıklama en fazla 500 karakter olabilir!" }
+            ]}
+          >
             <TextArea placeholder="Kategori açıklaması (opsiyonel)" rows={4} />
           </Form.Item>
 

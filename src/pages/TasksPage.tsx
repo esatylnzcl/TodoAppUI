@@ -106,8 +106,8 @@ const TasksPage = () => {
   const handleSubmit = (values: any) => {
     const data = {
       ...values,
-      startDate: values.startDate ? values.startDate.toISOString() : undefined,
-      endDate: values.endDate ? values.endDate.toISOString() : undefined,
+      startDate: values.startDate.toISOString(),
+      endDate: values.endDate.toISOString(),
     };
 
     if (editingTask) {
@@ -322,13 +322,25 @@ const TasksPage = () => {
           <Form.Item
             name="title"
             label="Başlık"
-            rules={[{ required: true, message: "Başlık gerekli!" }]}
+            rules={[
+              { required: true, message: "Başlık gerekli!" },
+              { min: 3, message: "Başlık en az 3 karakter olmalı!" },
+              { max: 200, message: "Başlık en fazla 200 karakter olabilir!" }
+            ]}
           >
             <Input placeholder="Görev başlığı" size="large" />
           </Form.Item>
 
-          <Form.Item name="description" label="Açıklama">
-            <TextArea placeholder="Görev açıklaması (opsiyonel)" rows={4} />
+          <Form.Item 
+            name="description" 
+            label="Açıklama"
+            rules={[
+              { required: true, message: "Açıklama gerekli!" },
+              { min: 5, message: "Açıklama en az 5 karakter olmalı!" },
+              { max: 1000, message: "Açıklama en fazla 1000 karakter olabilir!" }
+            ]}
+          >
+            <TextArea placeholder="Görev açıklaması" rows={4} />
           </Form.Item>
 
           <Form.Item
@@ -369,7 +381,11 @@ const TasksPage = () => {
             </Form.Item>
           )}
 
-          <Form.Item name="startDate" label="Başlangıç Tarihi" className="mb-0">
+          <Form.Item 
+            name="startDate" 
+            label="Başlangıç Tarihi"
+            rules={[{ required: true, message: "Başlangıç tarihi gerekli!" }]}
+          >
             <DatePicker
               style={{ width: "100%" }}
               size="large"
@@ -378,7 +394,11 @@ const TasksPage = () => {
             />
           </Form.Item>
 
-          <Form.Item name="endDate" label="Bitiş Tarihi" className="mb-0">
+          <Form.Item 
+            name="endDate" 
+            label="Bitiş Tarihi"
+            rules={[{ required: true, message: "Bitiş tarihi gerekli!" }]}
+          >
             <DatePicker
               style={{ width: "100%" }}
               size="large"

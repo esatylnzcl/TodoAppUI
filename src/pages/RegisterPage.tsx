@@ -2,7 +2,6 @@ import { Form, Input, Button, Card, Typography, message } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "../api/authService";
-import { useAuthStore } from "../store/authStore";
 import type { RegisterData } from "../types";
 import { getColors } from "../config/colors";
 
@@ -10,38 +9,40 @@ const { Title, Text } = Typography;
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const setAuth = useAuthStore((state) => state.setAuth);
-  const colors = getColors(false); // Always light mode
+  const colors = getColors(false);
   const [form] = Form.useForm();
 
   const registerMutation = useMutation({
     mutationFn: (data: RegisterData) => authService.register(data),
     onSuccess: (data) => {
-      console.log("Register Success Data:", data); // Debug
-
-      if (!data.token || !data.user) {
-        console.error("Invalid response format:", data);
-        message.error("Sunucu yanıtı geçersiz!");
-        return;
-      }
-
-      setAuth(data.user, data.token);
-      message.success("Kayıt başarılı!");
-      navigate("/dashboard");
+      message.success(data.message || "Kayıt başarılı! Giriş yapabilirsiniz.");
+      
+      setTimeout(() => {
+        navigate("/login");
+      }, 1500);
     },
     onError: (error: any) => {
-      // Backend validation hatalarını göster
-      const errorMessage = error.response?.data?.errors
-        ? Object.values(error.response.data.errors).flat().join(", ")
-        : error.response?.data?.message ||
-          error.response?.data?.title ||
-          "Kayıt başarısız!";
+      const errorData = error.response?.data;
+      
+      let errorMessage = "Kayıt başarısız!";
+      
+      if (errorData?.errors && typeof errorData.errors === 'object') {
+        const errors = Object.values(errorData.errors)
+          .flat()
+          .filter(Boolean)
+          .join(", ");
+        if (errors) errorMessage = errors;
+      } else if (errorData?.message) {
+        errorMessage = errorData.message;
+      } else if (errorData?.title) {
+        errorMessage = errorData.title;
+      }
+      
       message.error(errorMessage);
     },
   });
 
   const handleSubmit = (values: any) => {
-    // confirmPassword'u çıkar, backend'e gönderme
     const { confirmPassword, ...registerData } = values;
     registerMutation.mutate(registerData as RegisterData);
   };
